@@ -182,7 +182,7 @@ async def encode_phase(app, video_path, sub_path, logo_path, msg_id):
         ])
 
     elif TASK_TYPE == "mux":
-        font_args = []
+        font_args =[]
 
         if os.path.exists("fonts"):
             for idx, f in enumerate(os.listdir("fonts")):
@@ -212,7 +212,7 @@ async def encode_phase(app, video_path, sub_path, logo_path, msg_id):
             else 'subrip'
         )
 
-        cmd = [
+        cmd =[
             'ffmpeg',
             '-y',
 
@@ -266,7 +266,7 @@ async def encode_phase(app, video_path, sub_path, logo_path, msg_id):
 
         if logo_path and LOGO_ID != "none":
             abs_logo = os.path.abspath(logo_path).replace('\\', '/').replace(':', '\\:')
-            filter_complex.append(f"[1:v][0:v]scale2ref=w=iw*0.12:h=ow/mdar[logo][vid]")
+            filter_complex.append(f"[1:v]{current_v}scale2ref=w=rw*0.12:h=ow/mdar[logo][vid]")
             filter_complex.append(f"[vid][logo]overlay=W-w-10:10[outv]")
             current_v = "[outv]"
 
