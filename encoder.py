@@ -182,63 +182,67 @@ async def encode_phase(app, video_path, sub_path, logo_path, msg_id):
         ])
 
     elif TASK_TYPE == "mux":
-    font_args = []
+        font_args = []
 
-    if os.path.exists("fonts"):
-        for idx, f in enumerate(os.listdir("fonts")):
-            fp = os.path.join("fonts", f)
-            if not os.path.isfile(fp):
-                continue
+        if os.path.exists("fonts"):
+            for idx, f in enumerate(os.listdir("fonts")):
+                fp = os.path.join("fonts", f)
 
-            ext = os.path.splitext(f)[1].lower()
+                if not os.path.isfile(fp):
+                    continue
 
-            if ext in ['.ttf', '.ttc']:
-                mtype = "application/x-truetype-font"
-            elif ext == '.otf':
-                mtype = "application/vnd.ms-opentype"
-            else:
-                continue
+                ext = os.path.splitext(f)[1].lower()
 
-            font_args.extend([
-                "-attach", fp,
-                f"-metadata:s:t:{idx}", f"mimetype={mtype}"
-            ])
+                if ext in ['.ttf', '.ttc']:
+                    mtype = "application/x-truetype-font"
+                elif ext == '.otf':
+                    mtype = "application/vnd.ms-opentype"
+                else:
+                    continue
 
-    sub_codec = 'ass' if (
-        sub_path and sub_path.lower().endswith('.ass')
-    ) else 'subrip'
+                font_args.extend([
+                    "-attach", fp,
+                    f"-metadata:s:t:{idx}",
+                    f"mimetype={mtype}"
+                ])
 
-    cmd = [
-        'ffmpeg',
-        '-y',
+        sub_codec = (
+            'ass'
+            if sub_path and sub_path.lower().endswith('.ass')
+            else 'subrip'
+        )
 
-        '-fflags', '+genpts',
+        cmd = [
+            'ffmpeg',
+            '-y',
 
-        '-i', video_path,
-        '-i', sub_path,
+            '-fflags', '+genpts',
 
-        '-map', '0:v:0',
-        '-map', '0:a?',
-        '-map', '1:0',
+            '-i', video_path,
+            '-i', sub_path,
 
-        '-c:v', 'copy',
-        '-c:a', 'copy',
-        '-c:s', sub_codec,
+            '-map', '0:v:0',
+            '-map', '0:a?',
+            '-map', '1:0',
 
-        '-map_metadata', '-1',
+            '-c:v', 'copy',
+            '-c:a', 'copy',
+            '-c:s', sub_codec,
 
-        '-avoid_negative_ts', 'make_zero',
-        '-reset_timestamps', '1',
+            '-map_metadata', '-1',
 
-        '-max_muxing_queue_size', '4096',
+            '-avoid_negative_ts', 'make_zero',
+            '-reset_timestamps', '1',
 
-        '-disposition:s:0', 'default',
-        '-metadata:s:s:0', 'language=eng',
-        '-metadata:s:s:0', 'title=Hinglish'
-    ] + font_args + [
-        '-progress', 'pipe:1',
-        output
-    ]
+            '-max_muxing_queue_size', '4096',
+
+            '-disposition:s:0', 'default',
+            '-metadata:s:s:0', 'language=eng',
+            '-metadata:s:s:0', 'title=Hinglish'
+        ] + font_args + [
+            '-progress', 'pipe:1',
+            output
+        ]
 
     else:
         target_h = res_map.get(RESOLUTION, None) if RESOLUTION != "original" else None
