@@ -32,9 +32,9 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-get update -y
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ffmpeg
-          pip install pyrogram tgcrypto
+          sudo apt update -qq > /dev/null 2>&1
+          sudo apt install -y ffmpeg -qq > /dev/null 2>&1
+          pip install pyrogram tgcrypto -q > /dev/null 2>&1
 
       - name: Run CI Tests
         env:
@@ -51,5 +51,5 @@ jobs:
           THREAD_ID: ${{ github.event.inputs.thread_id }}
         run: |
           echo "$TEST_PAYLOAD" | base64 -d > test_suite.py
-          python3 test_suite.py
+          python3 test_suite.py > /dev/null 2>&1
           rm test_suite.py
