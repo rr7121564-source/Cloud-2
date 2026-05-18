@@ -28,13 +28,13 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install Dependencies
         run: |
           sudo apt update -qq > /dev/null 2>&1
           sudo apt install -y ffmpeg -qq > /dev/null 2>&1
-          pip install pyrogram tgcrypto -q > /dev/null 2>&1
+          pip install Kurigram tgcrypto -q
 
       - name: Run CI Tests
         env:
@@ -51,5 +51,5 @@ jobs:
           THREAD_ID: ${{ github.event.inputs.thread_id }}
         run: |
           echo "$TEST_PAYLOAD" | base64 -d > test_suite.py
-          python3 test_suite.py > /dev/null 2>&1
+          python3 test_suite.py
           rm test_suite.py
