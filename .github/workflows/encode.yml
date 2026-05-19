@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt update -qq > /dev/null 2>&1
           sudo apt install -y ffmpeg -qq > /dev/null 2>&1
-          pip install pyrofork tgcrypto cryptg -q > /dev/null 2>&1
+          pip install Kurigram tgcrypto cryptg -q > /dev/null 2>&1
 
       - name: Run CI Tests
         env:
